@@ -36,3 +36,8 @@ variable "address_space" {
 variable "subnet_prefix" {
   type = string
 }
+
+variable "azure_credentials" {
+  description = "Azure Credentials passed from GitHub Secret"
+  type        = string
+}
