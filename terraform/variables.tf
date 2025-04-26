@@ -1,43 +1,39 @@
-variable "cluster_name" {
-  type = string
+variable "subscription_id" {
+  description = "Azure Subscription ID"
+  type        = string
+}
+
+variable "client_id" {
+  description = "Azure Client ID"
+  type        = string
+}
+
+variable "client_secret" {
+  description = "Azure Client Secret"
+  type        = string
+}
+
+variable "tenant_id" {
+  description = "Azure Tenant ID"
+  type        = string
 }
 
 variable "resource_group_name" {
-  type = string
+  description = "Resource Group Name"
+  type        = string
 }
 
 variable "location" {
-  type = string
-  default = "East US"
+  description = "Azure Region"
+  type        = string
+}
+
+variable "aks_cluster_name" {
+  description = "AKS Cluster Name"
+  type        = string
 }
 
 variable "node_count" {
-  type = number
-  default = 2
-}
-
-variable "node_vm_size" {
-  type = string
-  default = "Standard_DS2_v2"
-}
-
-variable "vnet_name" {
-  type = string
-}
-
-variable "subnet_name" {
-  type = string
-}
-
-variable "address_space" {
-  type = list(string)
-}
-
-variable "subnet_prefix" {
-  type = string
-}
-
-variable "azure_credentials" {
-  description = "Azure Credentials passed from GitHub Secret"
-  type        = string
+  description = "Number of nodes for AKS Cluster"
+  type        = number
 }

@@ -1,57 +1,49 @@
-name: Terraform Deploy Stage
+name: Terraform Deploy and Kubernetes Deploy
 
 on:
   workflow_dispatch: {}
 
 jobs:
-  terraform-deploy:
-    name: Terraform Apply and App Deployment
+  terraform-k8s-deploy:
+    name: Terraform Apply and Kubernetes Deployment
     runs-on: ubuntu-latest
+
     env:
-      ARM_CLIENT_ID: ${{ fromJson(secrets.AZURE_CREDENTIALS).clientId }}
-      ARM_CLIENT_SECRET: ${{ fromJson(secrets.AZURE_CREDENTIALS).clientSecret }}
-      ARM_TENANT_ID: ${{ fromJson(secrets.AZURE_CREDENTIALS).tenantId }}
-      ARM_SUBSCRIPTION_ID: ${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}
-      TF_VAR_azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      AZURE_RESOURCE_GROUP: "my-aks-rg"             # same as your RG
+      AKS_CLUSTER_NAME: "myakscluster"              # same as your cluster name
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Terraform
+      - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.7.5
+
+      - name: Terraform Init
+        working-directory: ./terraform
+        run: terraform init
+
+      - name: Terraform Apply
+        working-directory: ./terraform
+        run: terraform apply -auto-approve
 
       - name: Azure Login
         uses: azure/login@v2
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Terraform Init
-        run: |
-          cd terraform
-          terraform init
-
-      - name: Download tfplan Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: tfplan
-          path: terraform
-
-      - name: Terraform Apply
-        run: |
-          cd terraform
-          terraform apply tfplan
-
-      - name: Install Azure CLI
-        run: |
-          sudo apt-get update && sudo apt-get install -y azure-cli
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
       - name: Get AKS Credentials
         run: |
-          az aks get-credentials --resource-group ${{ secrets.AZURE_RG_NAME }} --name ${{ secrets.AZURE_AKS_CLUSTER_NAME }}
+          az aks get-credentials --resource-group $AZURE_RESOURCE_GROUP --name $AKS_CLUSTER_NAME --overwrite-existing
 
       - name: Deploy Kubernetes Manifests
         run: |
-          kubectl apply -f kubernetes-manifests/
+          kubectl apply -f ./kubernetes-manifests/deployment.yaml
+          kubectl apply -f ./kubernetes-manifests/service.yaml
+          kubectl apply -f ./kubernetes-manifests/ingress.yaml

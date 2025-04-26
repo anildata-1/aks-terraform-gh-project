@@ -1,53 +1,29 @@
-name: Terraform Build Stage
+name: Terraform Build
 
 on:
   workflow_dispatch: {}
-  push:
-    branches:
-      - main
 
 jobs:
   terraform-build:
-    name: Terraform Init, Validate, and Plan
     runs-on: ubuntu-latest
+
     env:
-      ARM_CLIENT_ID: ${{ fromJson(secrets.AZURE_CREDENTIALS).clientId }}
-      ARM_CLIENT_SECRET: ${{ fromJson(secrets.AZURE_CREDENTIALS).clientSecret }}
-      ARM_TENANT_ID: ${{ fromJson(secrets.AZURE_CREDENTIALS).tenantId }}
-      ARM_SUBSCRIPTION_ID: ${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}
-      TF_VAR_azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Terraform
+      - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.7.5
-
-      - name: Azure Login
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Terraform Init
-        run: |
-          cd terraform
-          terraform init
-
-      - name: Terraform Validate
-        run: |
-          cd terraform
-          terraform validate
+        working-directory: ./terraform
+        run: terraform init
 
       - name: Terraform Plan
-        run: |
-          cd terraform
-          terraform plan -out=tfplan
-
-      - name: Upload tfplan Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: tfplan
-          path: terraform/tfplan
+        working-directory: ./terraform
+        run: terraform plan -out=tfplan
