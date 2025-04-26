@@ -1,0 +1,12 @@
+cluster_name         = "aks-tf-cluster"
+resource_group_name  = "aks-tf-rg"
+location             = "East US"
+node_count           = 2
+node_vm_size         = "Standard_DS2_v2"
+
+vnet_name            = "aks-tf-vnet"
+subnet_name          = "aks-tf-subnet"
+address_space        = ["10.0.0.0/16"]
+subnet_prefix        = "10.0.1.0/24"
+
+azure_credentials    = ""  # Keep empty, GitHub Actions will inject
