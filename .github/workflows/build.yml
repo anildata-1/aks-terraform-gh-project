@@ -15,6 +15,7 @@ jobs:
       ARM_CLIENT_SECRET: ${{ fromJson(secrets.AZURE_CREDENTIALS).clientSecret }}
       ARM_TENANT_ID: ${{ fromJson(secrets.AZURE_CREDENTIALS).tenantId }}
       ARM_SUBSCRIPTION_ID: ${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}
+      TF_VAR_azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
 
     steps:
       - name: Checkout Code
@@ -33,7 +34,7 @@ jobs:
       - name: Terraform Init
         run: |
           cd terraform
-          terraform init -backend-config="access_key=${{ secrets.AZURE_STORAGE_KEY }}"
+          terraform init
 
       - name: Terraform Validate
         run: |
