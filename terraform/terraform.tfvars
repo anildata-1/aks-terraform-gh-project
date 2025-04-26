@@ -7,3 +7,7 @@ vnet_name           = "aks-tf-vnet"
 subnet_name         = "aks-tf-subnet"
 address_space       = ["10.0.0.0/16"]
 subnet_prefix       = "10.0.1.0/24"
+subscription_id = "your-subscription-id"
+client_id       = "your-client-id"
+client_secret   = "your-client-secret"
+tenant_id       = "your-tenant-id"
