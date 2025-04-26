@@ -1,3 +1,21 @@
+# Azure authentication variables
+variable "subscription_id" {
+  type = string
+}
+
+variable "client_id" {
+  type = string
+}
+
+variable "client_secret" {
+  type = string
+}
+
+variable "tenant_id" {
+  type = string
+}
+
+# Infrastructure variables
 variable "resource_group_name" {
   type = string
 }
@@ -32,29 +50,4 @@ variable "address_space" {
 
 variable "subnet_prefix" {
   type = string
-}
-
-variable "tenant_id" {
-  description = "Azure Tenant ID"
-  type        = string
-}
-
-variable "resource_group_name" {
-  description = "Resource Group Name"
-  type        = string
-}
-
-variable "location" {
-  description = "Azure Region"
-  type        = string
-}
-
-variable "aks_cluster_name" {
-  description = "AKS Cluster Name"
-  type        = string
-}
-
-variable "node_count" {
-  description = "Number of nodes for AKS Cluster"
-  type        = number
 }
