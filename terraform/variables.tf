@@ -1,16 +1,37 @@
-variable "subscription_id" {
-  description = "Azure Subscription ID"
-  type        = string
+variable "resource_group_name" {
+  type = string
 }
 
-variable "client_id" {
-  description = "Azure Client ID"
-  type        = string
+variable "location" {
+  type = string
 }
 
-variable "client_secret" {
-  description = "Azure Client Secret"
-  type        = string
+variable "aks_cluster_name" {
+  type = string
+}
+
+variable "node_count" {
+  type = number
+}
+
+variable "node_vm_size" {
+  type = string
+}
+
+variable "vnet_name" {
+  type = string
+}
+
+variable "subnet_name" {
+  type = string
+}
+
+variable "address_space" {
+  type = list(string)
+}
+
+variable "subnet_prefix" {
+  type = string
 }
 
 variable "tenant_id" {
