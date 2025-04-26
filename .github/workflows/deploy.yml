@@ -1,0 +1,51 @@
+name: Terraform Deploy Stage
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  terraform-deploy:
+    name: Terraform Apply and App Deployment
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.7.5
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Terraform Init
+        run: |
+          cd terraform
+          terraform init
+
+      - name: Download tfplan Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan
+          path: terraform
+
+      - name: Terraform Apply
+        run: |
+          cd terraform
+          terraform apply tfplan
+
+      - name: Install Azure CLI
+        run: |
+          sudo apt-get update && sudo apt-get install -y azure-cli
+
+      - name: Get AKS Credentials
+        run: |
+          az aks get-credentials --resource-group ${{ secrets.AZURE_RG_NAME }} --name ${{ secrets.AZURE_AKS_CLUSTER_NAME }}
+
+      - name: Deploy Kubernetes Manifests
+        run: |
+          kubectl apply -f kubernetes-manifests/
