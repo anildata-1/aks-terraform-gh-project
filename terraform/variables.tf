@@ -27,3 +27,18 @@ variable "subnet_prefix" {
   description = "Subnet address prefix range"
   type        = string
 }
+
+variable "aks_cluster_name" {
+  description = "Name of the AKS Cluster"
+  type        = string
+}
+
+variable "node_count" {
+  description = "Number of nodes in the AKS node pool"
+  type        = number
+}
+
+variable "node_vm_size" {
+  description = "Size of the Virtual Machine for AKS nodes"
+  type        = string
+}
