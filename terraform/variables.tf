@@ -1,19 +1,29 @@
-variable "subscription_id" {
-  description = "Azure Subscription ID"
+variable "resource_group_name" {
+  description = "Azure Resource Group Name"
   type        = string
 }
 
-variable "client_id" {
-  description = "Azure Client ID"
+variable "location" {
+  description = "Azure Region (Location)"
   type        = string
 }
 
-variable "client_secret" {
-  description = "Azure Client Secret"
+variable "vnet_name" {
+  description = "Virtual Network Name"
   type        = string
 }
 
-variable "tenant_id" {
-  description = "Azure Tenant ID"
+variable "address_space" {
+  description = "Address space for the VNet"
+  type        = list(string)
+}
+
+variable "subnet_name" {
+  description = "Subnet Name inside VNet"
+  type        = string
+}
+
+variable "subnet_prefix" {
+  description = "Subnet address prefix range"
   type        = string
 }
